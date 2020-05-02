@@ -44,8 +44,24 @@ export const fetchDailyDataForCountry = async (country) => {
         }));
 
         fetchedData.pop();
+        let processedData = [];
 
-        return fetchedData;
+        for (let i = 0; i < fetchedData.length; i++) {
+            if (processedData.length === 0) {
+                processedData.push(fetchedData[i]);
+                continue;
+            }
+            const curr = fetchedData[i], comp = processedData[processedData.length - 1];
+            if (comp.date === curr.date) {
+                comp.confirmed += curr.confirmed;
+                comp.recovered += curr.recovered;
+                comp.deaths += curr.deaths;
+            } else {
+                processedData.push(fetchedData[i]);
+            }
+        }
+
+        return processedData;
     } catch (e) {
 
     }
