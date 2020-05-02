@@ -39,7 +39,7 @@ const Cards = (data) => {
     if (data.data === undefined || Object.keys(data.data).length === 0) {
         return 'Loading ...';
     }
-    const processedData = processData(data.data.Global, data.data.Countries, data.data.dataDate, data.country);
+    const processedData = processData(data.data.Global, data.data.Countries, data.data.Date, data.country);
     return (
         <div className={styles.container}>
             <Grid container spacing={3} justify={"center"}>
