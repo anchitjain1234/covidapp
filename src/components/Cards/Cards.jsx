@@ -5,10 +5,41 @@ import cx from "classnames";
 
 import styles from './Cards.module.css';
 
-const Cards = ({data: {confirmed, recovered, deaths, lastUpdate}}) => {
-    if (!confirmed) {
+const processData = (Global, Countries, Date, country) => {
+    if (country === undefined || country === "") {
+        return {
+            confirmed: Global.TotalConfirmed,
+            recovered: Global.TotalRecovered,
+            deaths: Global.TotalDeaths,
+            lastUpdate: Date
+        };
+    }
+
+    for (let i = 0; i < Countries.length; i++) {
+        let countryInfo = Countries[i];
+        if (countryInfo.Slug === country) {
+            return {
+                confirmed: countryInfo.TotalConfirmed,
+                recovered: countryInfo.TotalRecovered,
+                deaths: countryInfo.TotalDeaths,
+                lastUpdate: countryInfo.Date
+            }
+        }
+    }
+
+    return {
+        confirmed: 0,
+        recovered: 0,
+        deaths: 0,
+        lastUpdate: new window.Date()
+    };
+}
+
+const Cards = (data) => {
+    if (data.data === undefined || Object.keys(data.data).length === 0) {
         return 'Loading ...';
     }
+    const processedData = processData(data.data.Global, data.data.Countries, data.data.dataDate, data.country);
     return (
         <div className={styles.container}>
             <Grid container spacing={3} justify={"center"}>
@@ -16,9 +47,9 @@ const Cards = ({data: {confirmed, recovered, deaths, lastUpdate}}) => {
                     <CardContent>
                         <Typography color={"textSecondary"} gutterBottom>Infected</Typography>
                         <Typography variant={"h5"}>
-                            <CountUp start={0} end={confirmed.value} duration={2.5} separator={","} />
+                            <CountUp start={0} end={processedData.confirmed} duration={2.5} separator={","} />
                         </Typography>
-                        <Typography color={"textSecondary"}>{new Date(lastUpdate).toDateString()}</Typography>
+                        <Typography color={"textSecondary"}>{new Date(processedData.lastUpdate).toDateString()}</Typography>
                         <Typography variant={"body2"}>Number of active cases for COVID-19</Typography>
                     </CardContent>
                 </Grid>
@@ -26,9 +57,9 @@ const Cards = ({data: {confirmed, recovered, deaths, lastUpdate}}) => {
                     <CardContent>
                         <Typography color={"textSecondary"} gutterBottom>Recovered</Typography>
                         <Typography variant={"h5"}>
-                            <CountUp start={0} end={recovered.value} duration={2.5} separator={","} />
+                            <CountUp start={0} end={processedData.recovered} duration={2.5} separator={","} />
                         </Typography>
-                        <Typography color={"textSecondary"}>{new Date(lastUpdate).toDateString()}</Typography>
+                        <Typography color={"textSecondary"}>{new Date(processedData.lastUpdate).toDateString()}</Typography>
                         <Typography variant={"body2"}>Number of recoveries from COVID-19</Typography>
                     </CardContent>
                 </Grid>
@@ -36,9 +67,9 @@ const Cards = ({data: {confirmed, recovered, deaths, lastUpdate}}) => {
                     <CardContent>
                         <Typography color={"textSecondary"} gutterBottom>Deaths</Typography>
                         <Typography variant={"h5"}>
-                            <CountUp start={0} end={deaths.value} duration={2.5} separator={","} />
+                            <CountUp start={0} end={processedData.deaths} duration={2.5} separator={","} />
                         </Typography>
-                        <Typography color={"textSecondary"}>{new Date(lastUpdate).toDateString()}</Typography>
+                        <Typography color={"textSecondary"}>{new Date(processedData.lastUpdate).toDateString()}</Typography>
                         <Typography variant={"body2"}>Number of deaths caused COVID-19</Typography>
                     </CardContent>
                 </Grid>

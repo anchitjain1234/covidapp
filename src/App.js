@@ -10,30 +10,28 @@ import coronaImage from './images/image.png';
 
 class App extends React.Component {
     state = {
-        data: {},
+        summaryData: {},
         country: ''
     }
 
     async componentDidMount() {
         const fetchedData = await fetchData();
-        this.setState({data: fetchedData})
+        this.setState({summaryData: fetchedData})
     }
 
     handleCountryChange = async (country) => {
-        const fetchedData = await fetchData(country);
-        this.setState({data: fetchedData, country: country})
+        this.setState({country: country})
     }
 
-
     render() {
-        const { data, country } = this.state;
+        const {summaryData, country} = this.state;
 
         return (
             <div className={styles.container}>
                 <img className={styles.image} src={coronaImage} alt={"COVID-19"}/>
-                <Cards data={data}/>
+                <Cards data={summaryData} country={country}/>
                 <CountryPicker handleCountryChange={this.handleCountryChange}/>
-                <Chart data={data} country={country}/>
+                <Chart country={country}/>
             </div>
         )
     }
